@@ -25,7 +25,8 @@ export default function HotelDetailsPage() {
     apiFetch<Hotel>(`/hotels/${params.id}`).then(setHotel);
   }, [params.id]);
 
-  if (!isAllowed || !hotel) return null;
+  if (isAllowed === null || !hotel) return null;
+  if (!isAllowed) return null;
 
   return (
     <div>
