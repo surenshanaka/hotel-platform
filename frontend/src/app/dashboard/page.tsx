@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Building2, MapPin, ArrowRight, Hotel } from "lucide-react";
 import { useAuthGuard } from "@/lib/authGuard";
 import { apiFetch } from "@/lib/apiClient";
+import LogoutButton from "@/components/LogoutButton";
 
 interface Hotel {
   id: number;
@@ -83,8 +84,11 @@ export default function DashboardPage() {
                 Manage your hotels and properties
               </p>
             </div>
-            <div className="hidden md:flex items-center justify-center w-16 h-16 bg-white bg-opacity-20 backdrop-blur-sm rounded-xl">
-              <Hotel className="w-8 h-8" />
+            <div className="flex items-center gap-4">
+              <LogoutButton />
+              <div className="hidden md:flex items-center justify-center w-16 h-16 bg-white bg-opacity-20 backdrop-blur-sm rounded-xl">
+                <Hotel className="w-8 h-8" />
+              </div>
             </div>
           </div>
         </div>

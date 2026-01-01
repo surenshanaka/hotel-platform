@@ -15,6 +15,7 @@ import { apiFetch } from "@/lib/apiClient";
 import { useAuthGuard } from "@/lib/authGuard";
 import AdjustRateModal from "@/components/AdjustRateModal";
 import { Edit } from "lucide-react";
+import LogoutButton from "@/components/LogoutButton";
 
 interface Room {
   id: number;
@@ -132,13 +133,16 @@ export default function HotelDetailsPage() {
       {/* Header with gradient */}
       <div className="bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <Link
-            href="/dashboard"
-            className="inline-flex items-center gap-2 text-blue-100 hover:text-white mb-6 transition-colors"
-          >
-            <ArrowLeft className="w-5 h-5" />
-            <span>Back to Dashboard</span>
-          </Link>
+          <div className="flex items-center justify-between mb-6">
+            <Link
+              href="/dashboard"
+              className="inline-flex items-center gap-2 text-blue-100 hover:text-white transition-colors font-medium"
+            >
+              <ArrowLeft className="w-5 h-5" />
+              <span>Back to Dashboard</span>
+            </Link>
+            <LogoutButton />
+          </div>
 
           <div className="flex items-center justify-between">
             <div>
