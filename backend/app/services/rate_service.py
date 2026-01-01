@@ -8,18 +8,18 @@ def adjust_room_rate(
     new_rate: float,
     reason: str
 ):
-    if room.base_price == new_rate:
+    if room.price_per_night == new_rate:
         return room
 
     try:
         history = RateAdjustmentHistory(
             room_id=room.id,
-            old_rate=room.base_price,
+            old_rate=room.price_per_night,
             new_rate=new_rate,
             reason=reason
         )
 
-        room.base_price = new_rate
+        room.price_per_night = new_rate
 
         db.add(history)
         db.commit()
@@ -27,7 +27,7 @@ def adjust_room_rate(
 
         return room
 
-    except Exception:
+    except Exception as e:
         db.rollback()
         raise
 
