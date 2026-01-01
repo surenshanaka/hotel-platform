@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from app.core.database import SessionLocal
 from app.models.room import Room
 from app.schemas.room import RoomCreate, RoomUpdate
-from app.services.rate_service import calculate_effective_rate
+from app.schemas.rate_history import RateAdjustmentCreate
 
 router = APIRouter(prefix="/rooms", tags=["Rooms"])
 
@@ -69,23 +69,34 @@ def delete_room(room_id: int, db: Session = Depends(get_db)):
 # BUSINESS LOGIC
 # -----------------------------
 
-@router.get("/{room_id}/rate")
-def get_effective_rate(
+@router.post("/{room_id}/adjust-rate")
+def adjust_rate(
     room_id: int,
-    days_before_checkin: int,
+    payload: RateAdjustmentCreate,
     db: Session = Depends(get_db)
 ):
     room = db.query(Room).filter(Room.id == room_id).first()
     if not room:
         raise HTTPException(status_code=404, detail="Room not found")
 
-    rate = calculate_effective_rate(
-        room.price_per_night,
-        days_before_checkin
+    updated_room = adjust_room_rate(
+        db,
+        room,
+        payload.new_rate,
+        payload.reason
     )
 
     return {
-        "room_id": room_id,
-        "base_price": room.price_per_night,
-        "effective_rate": rate
+        "message": "Rate updated successfully",
+        "room_id": updated_room.id,
+        "new_rate": updated_room.base_price
     }
+
+@router.get("/{room_id}/rate-history")
+def get_rate_history(room_id: int, db: Session = Depends(get_db)):
+    room = db.query(Room).filter(Room.id == room_id).first()
+    if not room:
+        raise HTTPException(status_code=404, detail="Room not found")
+
+    return room.rate_history
+

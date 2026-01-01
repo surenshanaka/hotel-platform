@@ -10,3 +10,9 @@ class Room(Base):
     hotel_id = Column(Integer, ForeignKey("hotels.id"))
 
     hotel = relationship("Hotel", back_populates="rooms")
+
+    rate_history = relationship(
+        "RateAdjustmentHistory",
+        back_populates="room",
+        cascade="all, delete-orphan"
+    )
