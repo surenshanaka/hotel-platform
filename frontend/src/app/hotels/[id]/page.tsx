@@ -13,6 +13,8 @@ import {
 } from "lucide-react";
 import { apiFetch } from "@/lib/apiClient";
 import { useAuthGuard } from "@/lib/authGuard";
+import AdjustRateModal from "@/components/AdjustRateModal";
+import { Edit } from "lucide-react";
 
 interface Room {
   id: number;
@@ -30,20 +32,21 @@ export default function HotelDetailsPage() {
   const params = useParams();
   const [hotel, setHotel] = useState<Hotel | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [activeRoomId, setActiveRoomId] = useState<number | null>(null);
+
+  const fetchHotel = async () => {
+    try {
+      const data = await apiFetch<Hotel>(`/hotels/${params.id}`);
+      setHotel(data);
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.error("Failed to fetch hotel:", err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchHotel = async () => {
-      try {
-        const data = await apiFetch<Hotel>(`/hotels/${params.id}`);
-        setHotel(data);
-      } catch (err) {
-        // eslint-disable-next-line no-console
-        console.error("Failed to fetch hotel:", err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
     if (isAllowed) {
       fetchHotel();
     }
@@ -256,10 +259,17 @@ export default function HotelDetailsPage() {
                         </p>
                       </div>
                     </div>
-                    <div className="flex items-center text-gray-600 text-sm">
+                    <div className="flex items-center text-gray-600 text-sm mb-4">
                       <DollarSign className="w-4 h-4 mr-2" />
                       <span>Standard rate</span>
                     </div>
+                    <button
+                      onClick={() => setActiveRoomId(room.id)}
+                      className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 border border-transparent text-sm font-medium rounded-lg text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all"
+                    >
+                      <Edit className="w-4 h-4" />
+                      Adjust Rate
+                    </button>
                   </div>
                 </div>
               ))}
@@ -267,6 +277,17 @@ export default function HotelDetailsPage() {
           )}
         </div>
       </div>
+
+      {/* Adjust Rate Modal */}
+      {activeRoomId && (
+        <AdjustRateModal
+          roomId={activeRoomId}
+          onClose={() => {
+            setActiveRoomId(null);
+            fetchHotel(); // Refresh hotel data
+          }}
+        />
+      )}
     </div>
   );
 }
