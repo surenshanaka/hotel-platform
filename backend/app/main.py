@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.api import auth, users, rooms, hotels
+# Import all models to ensure SQLAlchemy relationships are registered
+from app.models import User, Hotel, Room, RateAdjustmentHistory
 
 app = FastAPI(title="Hotel Management API")
 
