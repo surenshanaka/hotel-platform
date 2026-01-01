@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.api import auth, users, rooms
+from app.api import auth, users, rooms, hotels
 
 app = FastAPI(title="Hotel Management API")
 
@@ -22,6 +22,7 @@ app.add_middleware(
 app.include_router(auth.router)
 app.include_router(users.router)
 app.include_router(rooms.router)
+app.include_router(hotels.router)
 
 @app.get("/health")
 def health_check():
