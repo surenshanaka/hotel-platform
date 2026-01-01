@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.core.database import SessionLocal
 from app.models.hotel import Hotel
@@ -12,6 +12,9 @@ def get_db():
     finally:
         db.close()
 
-@router.get("/")
-def list_hotels(db: Session = Depends(get_db)):
-    return db.query(Hotel).all()
+@router.get("/{hotel_id}")
+def get_hotel(hotel_id: int, db: Session = Depends(get_db)):
+    hotel = db.query(Hotel).filter(Hotel.id == hotel_id).first()
+    if not hotel:
+        raise HTTPException(status_code=404, detail="Hotel not found")
+    return hotel
