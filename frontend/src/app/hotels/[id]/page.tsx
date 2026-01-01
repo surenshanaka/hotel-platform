@@ -33,11 +33,15 @@ export default function HotelDetailsPage() {
       <h1>{hotel.name}</h1>
       <h2>Rooms</h2>
       <ul>
-        {hotel.rooms.map((room) => (
-          <li key={room.id}>
-            Room #{room.id} – ${room.price_per_night}
-          </li>
-        ))}
+        {hotel.rooms && hotel.rooms.length > 0 ? (
+          hotel.rooms.map((room) => (
+            <li key={room.id}>
+              Room #{room.id} – ${room.price_per_night}
+            </li>
+          ))
+        ) : (
+          <li>No rooms available</li>
+        )}
       </ul>
     </div>
   );

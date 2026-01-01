@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 
 from app.core.database import SessionLocal
 from app.models.hotel import Hotel
-from app.schemas.hotel import HotelCreate, HotelUpdate
+from app.schemas.hotel import HotelCreate, HotelUpdate, HotelResponse
 
 router = APIRouter(prefix="/hotels", tags=["Hotels"])
 
@@ -20,9 +20,9 @@ def get_db():
 # HOTEL CRUD
 # -----------------------------
 
-@router.get("/")
+@router.get("/", response_model=list[HotelResponse])
 def list_hotels(db: Session = Depends(get_db)):
-    return db.query(Hotel).all()
+    return db.query(Hotel).options(joinedload(Hotel.rooms)).all()
 
 
 @router.post("/")
@@ -34,9 +34,9 @@ def create_hotel(hotel: HotelCreate, db: Session = Depends(get_db)):
     return new_hotel
 
 
-@router.get("/{hotel_id}")
+@router.get("/{hotel_id}", response_model=HotelResponse)
 def get_hotel(hotel_id: int, db: Session = Depends(get_db)):
-    hotel = db.query(Hotel).filter(Hotel.id == hotel_id).first()
+    hotel = db.query(Hotel).options(joinedload(Hotel.rooms)).filter(Hotel.id == hotel_id).first()
     if not hotel:
         raise HTTPException(status_code=404, detail="Hotel not found")
     return hotel
