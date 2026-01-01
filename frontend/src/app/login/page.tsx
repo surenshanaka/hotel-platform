@@ -66,15 +66,7 @@ export default function LoginPage() {
         </div>
 
         <div className="relative z-10 flex items-center space-x-8 text-blue-100 text-sm">
-          <span>© 2024 Hotel Manager</span>
-          <span>•</span>
-          <a href="#" className="hover:text-white transition-colors">
-            Privacy
-          </a>
-          <span>•</span>
-          <a href="#" className="hover:text-white transition-colors">
-            Terms
-          </a>
+          <span>© 2026 Hotel Manager Pro</span>
         </div>
       </div>
 
